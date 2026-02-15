@@ -26,7 +26,7 @@ I attempted to vendor ACadSharp v3.0.8 source code and sign it with CADability's
 
 ## Recommended Solutions
 
-### Option 1: ILRepack (RECOMMENDED)
+### Option 1: ILRepack (RECOMMENDED for .NET Framework)
 
 Merge the unsigned ACadSharp.dll into CADability.dll after compilation using ILRepack.
 
@@ -39,6 +39,13 @@ Merge the unsigned ACadSharp.dll into CADability.dll after compilation using ILR
 **Cons:**
 - ⚠️ Slightly larger assembly size
 - ⚠️ Post-build step required
+- ⚠️ **NOT compatible with AOT (Ahead-of-Time) compilation in .NET 6+**
+
+**⚠️ AOT Compatibility Warning:**
+ILRepack performs post-build IL manipulation which is **incompatible with .NET 6+ AOT compilation** (`<PublishAot>true</PublishAot>`). If you plan to use AOT:
+- Do NOT use ILRepack
+- Consider Option 3 (target modern .NET) with dependency trimming
+- Or use Option 5 (request signed package) instead
 
 **Implementation:**
 1. Install ILRepack NuGet package
@@ -141,17 +148,19 @@ Contact ACadSharp maintainers to publish a strong-name signed NuGet package.
 
 ## Comparison Matrix
 
-| Solution | Complexity | Maintenance | Production Ready | Recommended |
-|----------|------------|-------------|------------------|-------------|
-| ILRepack | Medium | Low | ✅ Yes | ⭐ **Best** |
-| Skip Verification | Low | High | ❌ No | ❌ Not recommended |
-| Target .NET 6+ | Medium | None | ✅ Yes | ✅ If possible |
-| Fork & Sign | High | High | ✅ Yes | ⚠️ Last resort |
-| Request Signed | Low | None | ⏳ Eventually | ✅ Long-term |
+| Solution | Complexity | Maintenance | Production Ready | AOT Compatible | Recommended |
+|----------|------------|-------------|------------------|----------------|-------------|
+| ILRepack | Medium | Low | ✅ Yes (.NET Framework) | ❌ No | ⭐ **Best for .NET Framework** |
+| Skip Verification | Low | High | ❌ No | ✅ Yes | ❌ Not recommended |
+| Target .NET 6+ | Medium | None | ✅ Yes | ✅ Yes | ⭐ **Best for modern .NET + AOT** |
+| Fork & Sign | High | High | ✅ Yes | ✅ Yes | ⚠️ Last resort |
+| Request Signed | Low | None | ⏳ Eventually | ✅ Yes | ✅ Long-term |
 
 ## Immediate Action Plan
 
-**I recommend Option 1 (ILRepack)**:
+**For .NET Framework projects (current CADability target):**
+
+I recommend **Option 1 (ILRepack)**:
 
 1. **Add ILRepack to CADability**:
    ```bash
@@ -165,7 +174,15 @@ Contact ACadSharp maintainers to publish a strong-name signed NuGet package.
 
 4. **Deploy single CADability.dll** (now includes ACadSharp internally)
 
-This gives you a production-ready solution TODAY while allowing you to switch to an official signed package if it becomes available later.
+This gives you a production-ready solution TODAY for .NET Framework targets while allowing you to switch to an official signed package if it becomes available later.
+
+**⚠️ Important: If planning to target .NET 6+ with AOT compilation:**
+
+Do NOT use ILRepack. Instead:
+
+1. **Option A: Use modern .NET without AOT** - Target .NET 6+ but don't enable PublishAot
+2. **Option B: Request signed package** - Wait for or request ACadSharp to provide strong-name signed versions
+3. **Option C: Fork and sign** - Maintain your own signed fork of ACadSharp
 
 ## Why This Happened
 

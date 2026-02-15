@@ -80,6 +80,7 @@ If in the future the warning suppression approach proves insufficient:
    - ❌ Complex tooling
    - ❌ Licensing considerations
    - ❌ Debugging difficulties
+   - ❌ **NOT compatible with .NET 6+ AOT compilation** (see [AOT_COMPATIBILITY.md](AOT_COMPATIBILITY.md))
 
 3. **Delay-Sign**: Use delay-signing with public key only
    - ❌ Doesn't solve the unsigned dependency issue

@@ -25,6 +25,12 @@ This is an overview of the CAD [database](https://sofagh.github.io/CADability/CA
 
 And this is the [complete table of contents](https://sofagh.github.io/CADability/CADabilityDoc/api/toc.html).
 
+## Important Documentation
+
+- **[AOT Compatibility](AOT_COMPATIBILITY.md)** - Important considerations if you plan to use .NET 6+ AOT compilation
+- **[Strong Name Runtime Error Solutions](STRONG_NAME_RUNTIME_ERROR.md)** - Solutions for strong-name signing issues
+- **[Migration Summary](MIGRATION_SUMMARY.md)** - Details on the netDXF to ACadSharp migration
+
 License: CADability uses some open source code copied into it source code:
 - a quite old version of Wintellect.PowerCollections: Copyright (c) 2004-2005, Wintellect
 - netDxf library: Copyright (C) 2009-2016 Daniel Carvajal (haplokuon@gmail.com)
