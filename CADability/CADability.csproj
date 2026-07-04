@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>net8.0-windows</TargetFramework>
     <PackageId>CADability</PackageId>
     <Version>1.0.33</Version>
     <!-- Update this for each publish -->
@@ -10,7 +10,7 @@
     <RepositoryUrl>https://github.com/FriendsOfCADability/CADability</RepositoryUrl>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageTags>cad drawing winforms geometry netstandard net48</PackageTags>
+    <PackageTags>cad drawing winforms geometry net8 windows</PackageTags>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 
     <BuildDocFx Condition=" '$(Configuration)'!='RelWithDoc' ">false</BuildDocFx>
@@ -20,6 +20,7 @@
     <AssemblyName>CADability</AssemblyName>
     <Platforms>AnyCPU;x64</Platforms>
     <ManagePackageVersionsCentrally>false</ManagePackageVersionsCentrally>
+    <EnableUnsafeBinaryFormatterSerialization>true</EnableUnsafeBinaryFormatterSerialization>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -86,8 +87,8 @@
 
   <ItemGroup>
     <PackageReference Include="MathNet.Numerics.Signed" Version="5.0.0" />
-    <PackageReference Include="System.Drawing.Common" Version="6.0.0" />
-    <PackageReference Include="System.Text.Encoding.CodePages" Version="6.0.0" />
+    <PackageReference Include="System.Drawing.Common" Version="8.0.0" />
+    <PackageReference Include="System.Text.Encoding.CodePages" Version="8.0.0" />
     <Reference Include="Microsoft.VisualStudio.DebuggerVisualizers">
       <HintPath>$(VsInstallRoot)\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.DebuggerVisualizers.dll</HintPath>
     </Reference>
