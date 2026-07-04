@@ -100,6 +100,7 @@ namespace CADability.Actions
         private ShapeFoundDelegate shapeFound;
         private bool findShapeIsRunning;
         private Thread findShapeThread;
+        private CancellationTokenSource findShapeCts;
         private void OnShapeFound(CompoundShape cs, Plane plane, GeoPoint fromThisPoint)
         {
             Hatch h = base.ActiveObject as Hatch;
@@ -206,10 +207,6 @@ namespace CADability.Actions
                 }
                 findShapeIsRunning = false;
             }
-            catch (ThreadAbortException)
-            {
-                findShapeIsRunning = false;
-            }
             catch (System.Exception e)
             {
                 string dbg = e.Message;
@@ -246,40 +243,23 @@ namespace CADability.Actions
 
             if (findShapeIsRunning)
             {
-                lock (this)
-                {
-                    if (findShapeThread.ThreadState == ThreadState.Stopped)
-                    {
-                        findShapeIsRunning = false;
-                        return; // eingeführt am 7.6.06, da keine Reaktion bei der Mausbewegung
-                        // ThreadState ist ThreadState.Stopped aber findShapeIsRunning ist true und blieb auch so
-                    }
-                    if (findShapeThread.ThreadState != ThreadState.Running) return;
-                    try
-                    {
-                        findShapeThread.Abort();
-                    }
-                    catch (System.Threading.ThreadStateException)
-                    {
-                        findShapeIsRunning = false;
-                        return; // keinen weiteren thread starten
-                    }
-                }
+                findShapeCts?.Cancel();
                 try
                 {
-                    findShapeThread.Join();
+                    findShapeThread?.Join();
                 }
                 catch (System.Threading.ThreadStateException)
                 {
                     findShapeIsRunning = false;
-                    return; // keinen weiteren thread starten
+                    return;
                 }
             }
             try
             {
                 lock (this)
                 {
-                    findShapeThread = new Thread(new ThreadStart(FindShape));
+                    findShapeCts = new CancellationTokenSource();
+                    findShapeThread = new Thread(FindShape);
                     findShapeThread.Start();
                     findShapeIsRunning = true;
                 }
@@ -329,12 +309,7 @@ namespace CADability.Actions
         {
             if (findShapeIsRunning)
             {
-                try
-                {
-                    findShapeThread.Abort();
-                    // findShapeThread.Join(); // wäre hier vielleicht nicht mehr nötig
-                }
-                catch (ThreadStateException) { }
+                findShapeCts?.Cancel();
             }
             base.OnRemoveAction();
         }
